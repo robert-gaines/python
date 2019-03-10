@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+
+import threading
+import socket
+import sys
+
+# Script adapted from BHPY #
+
+def ServerLoop(local_host,local_port,remote_host,remote_port,receive_first):
+    #
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #
+    addr = (local_host,local_port)
+    #
+    try:
+        #
+        s.bind(addr)
+        #
+    except:
+        #
+        print("[!] Failed to listen on ", addr)
+        #
+        print("[!] Evaluate permissions & ports, then try again")
+        #
+        sys.exit(0)
+        #
+    print("[*] Listening on ", addr)
+    #
+    s.listen(5)
+    #
+    while(True):
+        #
+        client_socket, address = s.accept()
+        #
+        print("[+] Received connection from: %s:%d " % (address[0],address[1]))
+        #
+        proxy_thread = threading.Thread(target=proxy_handler,args=(client_socket,remote_port,receive_first))
+        #
+        proxy_thread.start()
+
+def ProxyHandler(client_socket, remote_host, remote_port, receive_first):
+    #
+    remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #
+    remote_addr = (remote_host,remote_port)
+    #
+    remote_socket.connect(remote_addr)
+    #
+    if(receive_first):
+        #
+        remote_buffer = receive_from(remote_socket)
+        #
+        hexdump(remote_buffer)
+        #
+        remote_buffer = response_handler(remote_buffer)
+        #
+        if(len(remote_buffer)):
+            #
+            print("[+] Sending %d bytes to localhost. " % len(remote_buffer))
+            #
+            client_socket.send(remote_buffer)
+            #
+    while(True):
+        #
+        local_buffer = receive_from(client_socket)
+        #
+        if(len(local_buffer)):
+            #
+            print("[+] Received %d from localhost " % len(local_buffer))
+            #
+            hexdump(local_buffer)
+            #
+            remote_socket.send(local_buffer)
+            #
+            remote_socket.send(local_buffer)
+            #
+            print("[+] Transmitting to remote address")
+            #
+            remote_buffer = receive_from(remote_socket)
+            #
+            if(len(remote_buffer)):
+                #
+                print("[+] Received %d bytes from remote " % len(remote_buffer))
+                #
+                hexdump(remote_buffer)
+                #
+                remote_buffer = response_handler(remote_handler)
+                #
+                client_socket.send(remote_buffer)
+                #
+                print("[+] Transmitting to local host")
+                #
+            if(not len(local_buffer) or not len(remote_buffer)):
+                #
+                client_socket.close()
+                #
+                remote_socket.close()
+                #
+                print("[!] Data transmission concluded. Closing connection.")
+                #
+                break
+
+def hexdump(src, length=16):
+    #
+    result = []
+    #
+    digits = 4 if isinstance(src, unicode) else 2
+    #
+    for i in xrange(0, len(src),length):
+        #
+        s = src[i:i+length]
+        #
+        hexa = b' '.join(["%0*X" % (digits, ord(x)) for x in s])
+        #
+        text = b''.join([x if 0x20 <= ord(x) < 0x7F else b'.' for x in s])
+        #
+        result.append( b"%04X %-*s %s" % (i, length*(digits + 1), hexa, text))
+        #
+    print(b'\n'.join(result))
+
+def receive_from(connection):
+    #
+    buffer = ""
+    #
+    connection.settimeout(2)
+    #
+    try:
+        #
+        while(True):
+            #
+            data = connection.recv(4096)
+            #
+            if(not data):
+                #
+                break
+                #
+    except:
+        #
+        pass
+        #
+    return buffer
+
+def request_handler(buffer):
+    #
+    return buffer
+
+def response_handler(buffer):
+    #
+    return buffer
+
+def main():
+    #
+    if(len(sys.argv[1:]) != 5):
+        #
+        print('''
+                "[!] Usage: .TCPProxy.py [localhost] [localport] [remotehost] [remoteport] [receive_first]"
+                ---
+                Ex: ./TCPProxy.py 127.0.0.1 1234 10.0.0.1 9000 True
+              ''')
+              #
+        sys.exit(0)
+        #
+    local_host = sys.argv[1]
+    #
+    local_port = int(sys.argv[2])
+    #
+    remote_host = sys.argv[3]
+    #
+    remote_port = int(sys.argv[4])
+    #
+    receive_first = sys.argv[5]
+    #
+    if("True" in receive_first):
+        #
+        receive_first = True
+        #
+    else:
+        #
+        receive_first = False
+        #
+    ServerLoop(local_host,local_port,remote_host, remote_port, receive_first)
+
+if(__name__ == '__main__'):
+    #
+    main()
