@@ -14,7 +14,7 @@ def main():
     #
     message = input("[+] Enter a message-> ")
     #
-    message = message.encode()
+    message = message.encode('utf-8')
     #
     address = (subject_host, int(subject_host_port))
     #
