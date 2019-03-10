@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
+# Basic TCP Client Program #
+
 import socket
 import sys
 
 def main():
+    #
+    print("<-- TCP Client -->")
     #
     subject_host = input("[+] Enter the host address-> ")
     #

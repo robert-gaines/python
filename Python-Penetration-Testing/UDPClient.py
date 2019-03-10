@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
+# Basic UDP Client Program #
+
 import socket
 
 def main():
+    #
+    print("<-- UDP Client Program -->")
     #
     subject_host = input("[+] Enter the host address-> ")
     #
