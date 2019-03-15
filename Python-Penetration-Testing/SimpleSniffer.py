@@ -27,6 +27,10 @@ def CheckUser():
 
 def main():
     #
+    print('''
+            <-- Simple Network Sniffer -->
+          ''')
+    #
     CheckUser()
     #
     s = socket.socket(socket.PF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0800))
