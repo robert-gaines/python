@@ -19,6 +19,7 @@ def main():
     print("[*] Host : MAC")
     #
     print("----------------------------")
+    #
     sniff(prn=ARPMonitor, filter='arp', store=0)
 
 if(__name__ == '__main__'):
