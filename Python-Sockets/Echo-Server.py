@@ -27,13 +27,17 @@ def main():
         #
         if(connection):
             #
-            print("[*] Connection from %s " % (connection))
+            print("[*] Connection from-> ", address)
             #
             while(True):
                 #
                 data = connection.recv(1024)
                 #
                 if(not data): break
+                    #
+                if(data):
+                    #
+                    print("[*] Host sends -> " ,data)
                     #
                 connection.send(b'[*] Echo-> %s ' % data)
                 #
