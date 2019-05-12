@@ -1,0 +1,6 @@
+Shells
+
+-> Reverse Shells : connect back through infrastructure
+-> Requires compromise of a host beyond the perimeter
+
+-> Shell : terminal / cmd interface transferred via the network
