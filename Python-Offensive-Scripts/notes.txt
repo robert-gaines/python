@@ -4,3 +4,11 @@ Shells
 -> Requires compromise of a host beyond the perimeter
 
 -> Shell : terminal / cmd interface transferred via the network
+
+-> Compile to Executable:
+    -> Pyinstaller -F -w <file>
+    -> Extract file from "dist"
+
+-> HTTP Reverse Shell
+    -> HTTP Get from Compromised host
+    -> HTTP Post from Compromised host
