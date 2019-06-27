@@ -1,31 +1,30 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import socket
+import sys
 
 def main():
     #
-    print("<-- TCP Echo Client -->")
+    message = b"[+] Testing Connection [+]"
     #
-    server = input("[+] Enter the server address-> ")
+    host = input("[+] Enter the server IP-> ")
     #
-    port = int(input("[+] Enter the server port-> "))
+    port = int(input("[+] Enter the port-> "))
     #
-    message = input("[+] Enter a message-> ")
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     #
-    message = str.encode(message)
+    print("[*] Attempting connection to: %s|%i " % (host,port))
     #
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host,port))
     #
-    server_addr = (server,port)
-    #
-    s.connect(server_addr)
-    #
-    s.send(message)
-    #
-    data = s.recv(1024)
-    #
-    print("[+] Client received: %s" % data)
-    #
+    for m in message:
+        #
+        s.send(m)
+        #
+        data = s.recv(1024)
+        #
+        print("[*] Received: ", data)
+        #
     s.close()
 
 if(__name__ == '__main__'):

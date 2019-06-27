@@ -1,86 +1,77 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
-import random
 import socket
 import time
-import sys 
+import sys
 import os 
 
-def CullChildProcess(ActiveChildProcesses):
-    #
-    while(ActiveChildProcesses):
-        #
-        pid,stat = os.waitpid(0, os.WNOHANG)
-        #
-        if(not pid): break 
-        #
-        ActiveChildProcesses.remove(pid)
+activeChildren = []
 
-def HandleClientConnection(connection):
+def Now():
     #
-    time.sleep(3)
-    #
-    while(True):
-        #
-        data = connection.recv(1024)
-        #
-        if(not data): break 
-        #
-        reply = "[+] Echo-> %s at %s " % (data,time.ctime(time.time()))
-        #
-        connection.send(reply.encode())
-        #
-    connection.close()
-    #
-    os._exit(0)
+    return time.ctime(time.time())
 
-def main():
+def ReapChildren():
     #
-    print("<-- Forked Server -->")
-    #
-    host = '127.0.0.1'
-    #
-    port = random.randint(1024,65535)
-    #
-    address = (host,port)
-    #
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #
-    try:
+    while(activeChildren):
         #
-        s.bind(address)
+        pid,status = os.waitpid(0, os.WNOHANG)
         #
-    except Exception as e:
-        #
-        print("[!] Bind operation failed, error-> ", e)
-        #
-    s.listen(5)
-    #
-    print("[*] Serving on %s:%i" % (host,port))
-    #
-    ActiveChildProcesses = []
-    #
-    while(True):
-        #
-        connection, address = s.accept()
-        #
-        print("[*] Connection from-> ", address,' @ ', time.ctime(time.time()))
-        #
-        CullChildProcess(ActiveChildProcesses)
-        #
-        SubordinatePid = os.fork()
-        #
-        if(SubordinatePid == 0):
+        if(not pid):
             #
-            HandleClientConnection(connection)
+            break
+            #
+        activeChildren.remove(pid)
+
+def HandleClient(connection):
+    #
+    time.sleep(5)
+    #
+    while(True):
+        #
+        data = connection.rev(1024)
+        #
+        if(not data):
+            #
+            break
+            #
+        reply = "[*] Transmission-> %s @ %s " % (data,Now())
+        #
+        connection.send(reply)
+        #
+        connection.close()
+        #
+        os._exit(0)
+
+def Dispatcher():
+    #
+    while(True):
+        #
+        connection,address = s.accept()
+        #
+        print("[*] Connection from: ", address, " at ", Now())
+        #
+        ReapChildren()
+        #
+        childPid = os.fork()
+        #
+        if(childPid == 0):
+            #
+            HandleClient(connection)
             #
         else:
             #
-            ActiveChildProcesses.append(SubordinatePid)
-        
-if(__name__ == '__main__'):
-    #
-    main()
+            activeChildren.append(childPid)
 
 
-
+host = '127.0.0.1'
+#
+port = 4444
+#
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#
+s.bind((host,port))
+#
+s.listen(3)
+#
+Dispatcher()

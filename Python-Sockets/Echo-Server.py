@@ -1,48 +1,41 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import socket
 import random
+import sys
 
 def main():
     #
-    print("<-- TCP Echo Server -->")
+    host = '0.0.0.0'
     #
-    host = '127.0.0.1'
-    #
-    port = random.randint(1024,65535)
+    port = random.randint(1024,65536)
     #
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     #
-    server_addr = (host,port)
+    print("[*] Binding: %s|%i " % (host,port))
     #
-    s.bind(server_addr)
+    s.bind((host,port))
     #
-    s.listen(5)
-    #
-    print("[*] Serving on: %s:%s " % (host,port))
+    s.listen(3)
     #
     while(True):
         #
-        connection, address = s.accept()
+        connection,address = s.accept()
         #
-        if(connection):
+        print("[+] Connection from-> ", address)
+        #
+        while(True):
             #
-            print("[*] Connection from-> ", address)
+            data = connection.recv(1024)
             #
-            while(True):
+            if(not data): 
                 #
-                data = connection.recv(1024)
+                break
                 #
-                if(not data): break
-                    #
-                if(data):
-                    #
-                    print("[*] Host sends -> " ,data)
-                    #
-                connection.send(b'[*] Echo-> %s ' % data)
-                #
+            connection.send(b"[*] Echo -> "+data)
+            #
         connection.close()
 
-if(__name__ == '__main__'):
+if(__name__ == "__main__"):
     #
     main()
