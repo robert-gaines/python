@@ -49,8 +49,34 @@ def CPUData():
     print(cpuFreq[0])
     #
     print()
+    #
+    print("[*] Average system load ")
+    #
+    print("------------------------")
+    #
+    loadAverage = psutil.getloadavg()
+    #
+    print(loadAverage)
+    #
+    print()
 
-
+def MemoryStats():
+    #
+    netMemory = psutil.virtual_memory()
+    #
+    memoryLabels = ['Total','Available','Percent','Used','Free']; i = 0
+    #
+    print("[*] Memory values: ")
+    #
+    print("-------------------")
+    #
+    for m in memoryLabels:
+        #
+        print(m,":",netMemory[i])
+        #
+        i = i+1
+        #
+    print()
 
 def main():
     #
@@ -61,6 +87,8 @@ def main():
     print()
     #
     CPUData()
+    #
+    MemoryStats()
     #
     return
 
