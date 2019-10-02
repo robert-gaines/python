@@ -67,7 +67,7 @@ class LightIDS():
                                 #
                                 logging.info("<<<ALERT>>> [%s] Traffic from: %s:%s <<<ALERT>>>" % (ts,src,int(destPort)))
                                 #
-                                time.sleep(1)
+                                time.sleep(3)
                                 #
                                 cls = subprocess.call('cls',shell=True)
                                 #
@@ -109,7 +109,7 @@ class LightIDS():
                                     #
                                     logging.info("<<<ALERT>>> [%s] Traffic from: %s:%s <<<ALERT>>>" % (ts,src,int(destPort)))
                                     #
-                                    time.sleep(1)
+                                    time.sleep(3)
                                     #
                                     cls = subprocess.call('cls',shell=True)
                                     #
@@ -151,7 +151,7 @@ class LightIDS():
                                     #
                                     logging.info("<<<ALERT>>> [%s] Traffic from: %s:%s <<<ALERT>>>" % (ts,src,int(destPort)))
                                     #
-                                    time.sleep(1)
+                                    time.sleep(3)
                                     #
                                     cls = subprocess.call('cls',shell=True)
                                     #
