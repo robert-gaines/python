@@ -3,8 +3,10 @@
 _AUTH_ = 'RWG'
 
 from scapy.arch.windows import get_windows_if_list
+from datetime import datetime
 from scapy.all import *
-import datetime
+import subprocess
+import logging
 import psutil
 import time
 import sys
@@ -23,29 +25,145 @@ class LightIDS():
         #
     def ParsePacket(self,pkt):
         #
-        # print(self.ruleSet)
+        n = datetime.now() ; t = n.strftime("%m:%d:%Y - %H:%M:%S") ; ts = n.strftime("%m_%d_%Y_%H_%M_%S")
+        #
+        logName = "IDS-"+ts+".log"
+        #
+        logging.basicConfig(filename=logName,level=logging.INFO)
         #
         try:
             #
             if(pkt):
                 #
-                if(len(ruleSet) == 0):
-                    #
-                    #print(pkt)
+                if(len(self.ruleSet) == 0):
                     #
                     if('IP' in pkt):
                         #
-                        destination = pkt[IP].dst
+                        src = pkt[IP].src ; dst = pkt[IP].dst ; destPort = "" ; srcPort = ""
                         #
                         try:
                             #
-                            if(destination == addr):
+                            if(pkt.haslayer(TCP)):
                                 #
-                                print(destination)
+                                destPort = pkt[TCP].dport ; srcPort = pkt[TCP].sport
+                                #
+                            elif(pkt.haslayer(UDP)):
+                                #
+                                destPort = pkt[UDP].dport ; srcPort = pkt[UDP].sport
+                                #
+                            else:
+                                #
+                                destPort = 0 ; srcPort = 0
                                 #
                         except:
                             #
+                            pass
+                            #
+                        try:
+                            #
+                            if(dst == self.addr):
+                                #
+                                print("<<<ALERT>>> [%s] Traffic from: %s:%s <<<ALERT>>>" % (t,src,int(destPort)))
+                                #
+                                logging.info("<<<ALERT>>> [%s] Traffic from: %s:%s <<<ALERT>>>" % (ts,src,int(destPort)))
+                                #
+                                time.sleep(1)
+                                #
+                                cls = subprocess.call('cls',shell=True)
+                                #
+                        except Exception as e:
+                            #
+                            print("[*] Error: %s " % e)
+                            #
                             print("[!] Packet Processing Failure [!]")
+                            #
+                            time.sleep(1)
+                            #
+                            cls = subprocess.call('cls',shell=True)
+                            #
+                elif(len(self.ruleSet[0]) == 1):
+                    #
+                    if('IP' in pkt):
+                        #
+                        src = pkt[IP].src ; dst = pkt[IP].dst ; destPort = "" ; srcPort = ""
+                        #
+                        try:
+                            #
+                            if(pkt.haslayer(TCP)):
+                                #
+                                destPort = pkt[TCP].dport ; srcPort = pkt[TCP].sport
+                                #
+                            elif(pkt.haslayer(UDP)):
+                                #
+                                destPort = pkt[UDP].dport ; srcPort = pkt[UDP].sport
+                                #
+                            else:
+                                #
+                                destPort = 0 ; srcPort = 0
+                                #
+                            for r in range(0,len(self.ruleSet)):
+                                #
+                                if(int(self.ruleSet[r][0]) == int(destPort) or dst == self.addr):
+                                    #
+                                    print("<<<ALERT>>> [%s] Traffic from: %s:%s <<<ALERT>>>" % (t,src,srcPort))
+                                    #
+                                    logging.info("<<<ALERT>>> [%s] Traffic from: %s:%s <<<ALERT>>>" % (ts,src,int(destPort)))
+                                    #
+                                    time.sleep(1)
+                                    #
+                                    cls = subprocess.call('cls',shell=True)
+                                    #
+                        except Exception as e:
+                            #
+                            print("[*] Error: %s " % e)
+                            #
+                            print("[!] Packet Processing Failure [!]")
+                            #
+                            time.sleep(1)
+                            #
+                            cls = subprocess.call('cls',shell=True)
+                            #
+                elif(len(self.ruleSet[0]) == 2):
+                    #
+                    if('IP' in pkt):
+                        #
+                        src = pkt[IP].src ; dst = pkt[IP].dst ; destPort = ""
+                        #
+                        try:
+                            #
+                            if(pkt.haslayer(TCP)):
+                                #
+                                destPort = pkt[TCP].dport
+                                #
+                            elif(pkt.haslayer(UDP)):
+                                #
+                                destPort = pkt[UDP].dport
+                                #
+                            else:
+                                #
+                                destPort = 0
+                                #
+                            for r in range(0,len(ruleSet)):
+                                #
+                                if(str(src) == ruleSet[r][0] or int(ruleSet[r][1]) == int(destPort)):
+                                    #
+                                    print("<<<ALERT>>> [%s] Traffic from: %s:%s <<<ALERT>>>" % (t,src,destPort))
+                                    #
+                                    logging.info("<<<ALERT>>> [%s] Traffic from: %s:%s <<<ALERT>>>" % (ts,src,int(destPort)))
+                                    #
+                                    time.sleep(1)
+                                    #
+                                    cls = subprocess.call('cls',shell=True)
+                                    #
+                        except Exception as e:
+                            #
+                            print("[*] Error: %s " % e)
+                            #
+                            print("[!] Packet Processing Failure [!]")
+                            #
+                            time.sleep(1)
+                            #
+                            cls = subprocess.call('cls',shell=True)
                             #
                 else:
                     #
@@ -75,7 +193,7 @@ def PopulateRuleSet():
                 #
                 break
                 #
-            port = int(port) ; ruleSet.append(port)
+            portValue = [int(port)] ; ruleSet.append(portValue)
             #
     def PopulateIPPortList():
         #
@@ -126,15 +244,29 @@ if(__name__ == '__main__'):
     #
     def RunDetection(activeInterface,ruleSet,addr):
         #
+        print("[*] Performing detection...")
+        #
         L = LightIDS(activeInterface,ruleSet,addr)
         #
         L.Run()
-    #
+        #
     print("<<< Lightweight IDS >>>")
+    #
+    print()
     #
     time.sleep(1)
     #
+    print("""
+    *****************************************************
+    A lightweight Host Intrustion Detection System (HIDS)
+    *****************************************************
+          """)
+    #
+    print() ; time.sleep(1)
+    #
     print("[*] Collecting interface data...") ; time.sleep(1)
+    #
+    print()
     #
     interfaces = get_windows_if_list()
     #
@@ -146,6 +278,8 @@ if(__name__ == '__main__'):
         #
         print(i,')',interfaces[i]['name'])
         #
+    print()
+    #
     interface = int(input("[+] Enter the interface index-> "))
     #
     print("[*] Selected: %s " % interfaces[interface]['name'])
