@@ -1,0 +1,13 @@
+-> TKinter == TK Interface
+-> TTK -> Can be styled
+
+-> TKinter Pack:
+    -> Arranges application elements
+    -> Supports padding
+    
+    -> Expansion Priority
+        -> If elements have "expand=true"
+        -> If elements are set to expand...
+        -> These elements will have expansion Priority
+
+        
