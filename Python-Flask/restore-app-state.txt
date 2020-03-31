@@ -1,0 +1,4 @@
+-> Navigate to app directory
+-> Activate virtual environment
+-> Set environment variable
+

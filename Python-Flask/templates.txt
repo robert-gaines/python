@@ -1,0 +1,21 @@
+-> Designed to separate application logic from presentation
+-> Template placeholders: "{{}}"
+-> Requires: "from flask import render_template"
+
+---
+
+Conditional Statements
+----------------------
+
+-> Template Engine: jinja2
+
+---
+
+Template Inheritance
+--------------------
+
+-> Use case: Navigation Bar
+-> Assign a base template with common features
+
+---
+

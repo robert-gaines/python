@@ -1,0 +1,23 @@
+Create Virtual Environment
+--------------------------
+
+py -3 -m venv venv
+
+Activate Virtual Environment 
+----------------------------
+
+*Nix -> source venv/bin/activate
+
+Windows -> venv/Scripts/activate.bat
+
+Install Flask
+-------------
+
+Install Flask -> py -3 -m pip install flask
+
+---
+
+Establish App Instance: "set FLASK_APP=<name.py>"
+
+---
+

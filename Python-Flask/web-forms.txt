@@ -1,0 +1,6 @@
+Flask-WTF
+---------
+
+-> Installation: "py -3 -m pip install flask-wtf"
+-> Secret Key: For XSS Protection
+->  
