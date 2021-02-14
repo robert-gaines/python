@@ -1,0 +1,9 @@
+den.bowker,P@ssword!,root
+qin.wang,P@ssw0rd!,root
+dave.anderson,P@ssw0rd!,root
+colin.pringle,P@ssw0rd!,root
+steve.price,P@ssw0rd!,root
+cori.huggins,P@ssw0rd!,root
+josh.arp,P@ssw0rd!,root
+eric.parker,P@ssw0rd!,root
+robert.gaines,P@ssw0rd!,root
